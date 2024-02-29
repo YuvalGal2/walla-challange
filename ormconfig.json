@@ -1,0 +1,7 @@
+{
+  "type": "mongodb",
+  "useNewUrlParser": true,
+  "useUnifiedTopology": true,
+  "synchronize": true,
+  "entities": ["dist/**/*.entity{.ts,.js}"]
+}
