@@ -1,22 +1,35 @@
 version: '3'
 services:
-  mongodb:
-    image: mongo
+  mysql:
+    image: mysql:latest
     restart: always
     ports:
-      - '27017:27017'
+      - '3307:3306'
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     volumes:
-      - mongodb_data:/data/db
+      - mysql_data:/var/lib/mysql
+    networks:
+      - mynetwork
 
   app:
     build: .
     ports:
-      - '3000:3000'
+      - '3001:3001'
     depends_on:
-      - mongodb
+      - mysql
+    environment:
+      DOMAIN: ${DOMAIN}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOST: mysql  # Use service name as the host
+      DB_NAME: ${DB_NAME}
+    networks:
+      - mynetwork
 
 volumes:
-  mongodb_data:
+  mysql_data:
+
+networks:
+  mynetwork:

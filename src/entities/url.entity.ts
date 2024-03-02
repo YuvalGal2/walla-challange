@@ -1,9 +1,9 @@
-import { Entity, Column, BaseEntity, ObjectIdColumn } from "typeorm";
-
+import { Entity, Column, BaseEntity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('links')
 export class UrlEntity extends BaseEntity {
-  @ObjectIdColumn()
-  _id: string;
+  @PrimaryGeneratedColumn()
+  id: number;
+
   @Column({ type: 'text' })
   originalUrl: string;
 

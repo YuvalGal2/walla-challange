@@ -1,7 +1,6 @@
 {
-  "type": "mongodb",
-  "useNewUrlParser": true,
-  "useUnifiedTopology": true,
-  "synchronize": true,
-  "entities": ["dist/**/*.entity{.ts,.js}"]
+  "type": "mysql",
+  "port": 3306,
+  "entities": ["dist/**/*.entity{.ts,.js}"],
+  "synchronize": true
 }

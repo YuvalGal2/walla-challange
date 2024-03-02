@@ -6,7 +6,7 @@ import * as dns from 'dns';
 export class DnsLookupService {
   async lookup(url: string): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
-      const domain = new URL(url).hostname;
+      const domain: string = new URL(url).hostname;
       dns.lookup(domain, (err) => {
         if (err) {
           resolve(false);
