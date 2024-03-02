@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { DnsLookupService } from './dns-lookup-service';
 import * as dotenv from 'dotenv';
 import { UrlEntity } from '../entities/url.entity';
+import * as url from "url";
 dotenv.config();
 
 @Injectable()
@@ -23,11 +24,18 @@ export class UrlService {
   }
 
   async expandUrl(shortUrl: string){
-    // const expandedUrl = UrlEntity.get(shortUrl);
-    // if (!expandedUrl) {
-    //   throw new NotFoundException('Short URL not found');
-    // }
-    // return expandedUrl;
+    const parsedUrl = url.parse(shortUrl);
+    const path = parsedUrl.pathname;
+    const segments = path.split('/');
+    if (segments.length === 0) {
+      throw new NotFoundException('URL is invalid');
+    }
+    const linkId = segments[segments.length - 1];
+    const res = await UrlEntity.findOneBy({ generatedId: linkId });
+    if (!res) {
+      throw new NotFoundException('Short URL not found');
+    }
+    return res.originalUrl;
   }
 
   async isValidUrl(url: string): Promise<boolean> {
@@ -64,14 +72,14 @@ export class UrlService {
     return pattern.test(url);
   }
   private async generateShortId() {
-    // just to double check - check the database to make sure no other links has the same id.
+    // double check - check the database to make sure no other links has the same id.
     // Convert timestamp to base36 string - should make it shorter
     const timestamp = Date.now().toString(36);
     const randomDigit = Math.floor(Math.random() * 9) + 1;
     const shortId = timestamp + randomDigit.toString();
     const res = await UrlEntity.findOneBy({ generatedId: shortId });
     if (!res) {
-     return shortId;
+      return shortId;
     }
     return this.generateShortId();
   }
